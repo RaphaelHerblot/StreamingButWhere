@@ -12,7 +12,15 @@
     <body>
 
         <header>
-            <form action="#">
+            <div class="login">
+                <a href="./index.html"> <input type="button" value="Déconnexion" id="disconnect"> </a>
+                <a href="./login.html"> <input type="button" value="Connexion" id="connexionButton"> </a>
+                <a href="./register.html"> <input type="button" value="Inscription" id="inscriptionButton"> </a>
+            </div>
+            <h1>Streaming but Where ?</h1>
+            <h2 id="hi"></h2>
+            <p id="favoriteParagraph">Tes films favoris sont les suivants : <span id="favorite"></span></p>
+            <form id="searchForm" action="#">
                 <label for="searchData">Search a movie <span></span></label>
                 <input type="text" name="searchData" id="searchData" minlength="1" required>
                 <button type="submit">Search</button>
@@ -32,5 +40,6 @@
         </footer>
 
         <script src="./js/app.js"></script>
+        <script src="./js/loginCheck.js"></script>
     </body>
 </html>

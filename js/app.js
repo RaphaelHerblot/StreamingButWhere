@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 
     Déclarations
     */
-        const searchForm = document.querySelector('header form');
-        const searchLabel = document.querySelector('header form span');
+        const searchForm = document.querySelector('header form#searchForm');
+        const searchLabel = document.querySelector('header form#searchForm span');
         const searchData = document.querySelector('[name="searchData"]');
         const themoviedbUrl = 'https://api.themoviedb.org/3/search/movie?api_key=6fd32a8aef5f85cabc50cbec6a47f92f&query=';
         const movieList = document.querySelector('#movieList');
@@ -100,12 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2>${data.original_title}</h2>
                     <p>${data.overview}</p>
                     <button>Voir en streaming</button>
+                    <button class="addFilm" film-id=${data.id} film-title="${data.original_title}">Ajouter en favori</button>
                     <button id="closeButton">Close</button>
                 </div>
             `;
 
             moviePopin.parentElement.classList.add('open');
             closePopin( document.querySelector('#closeButton') )
+            addFavori(document.querySelectorAll('.addFilm'));
         };
 
         const closePopin = button => {
@@ -117,6 +119,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 300 )
             })
         }
+
+        const addFavori = (btnList) => {
+            let filmToAdd = {};
+            let config = {};
+            let authorValue = localStorage.getItem("user");
+            let idFilmValue = null;
+            let nameFilmValue = null;
+
+            for(let btn of btnList){
+                btn.addEventListener('click', ()=>{
+                    idFilmValue = btn.getAttribute('film-id');
+                    nameFilmValue = btn.getAttribute('film-title')
+                    filmToAdd = {
+                        author: authorValue,
+                        id: idFilmValue,
+                        name: nameFilmValue
+                    }
+                    config = {
+                        method: 'POST',
+                        body: JSON.stringify(filmToAdd),
+                        headers: { 'Content-Type': 'application/json' }
+                    }
+                    if(authorValue !== null){
+                      fetchFavorite(config);
+                    }else{
+                        console.log('merci de vous connecter')
+                    }
+                })
+            }
+        }
+
+        const fetchFavorite = (fetchData) => {
+            fetch('https://api.dwsapp.io/api/favorite', fetchData)
+            .then(response => {
+                return response.json(); 
+            })
+            .then(jsonData => {
+                console.log(jsonData);
+            })
+            .catch(error=>{
+                console.log(error);
+            })
+        }
+
     //
 
     /* 
