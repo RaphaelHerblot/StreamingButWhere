@@ -59,10 +59,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log(collection)
             for( let i = 0; i < collection.length; i++ ){
-                movieList.innerHTML += `
+                if(collection[i].poster_path != null) {
+                    movieList.innerHTML += `
+                        <article>
+                            <figure>
+                                <img src="https://image.tmdb.org/t/p/w500/${collection[i].poster_path}" alt="${collection[i].original_title}">
+                                <figcaption movie-id="${collection[i].id}">
+                                    ${collection[i].original_title} (voir plus...)
+                                </figcaption>
+                            </figure>
+                            <div class="overview">
+                                <div>
+                                    <p>${collection[i].overview}</p>
+                                    <button>Voir le film</button>
+                                </div>
+                            </div>
+                        </article>
+                    `;
+                }
+                else {
+                    movieList.innerHTML += `
                     <article>
                         <figure>
-                            <img src="https://image.tmdb.org/t/p/w500/${collection[i].poster_path}" alt="${collection[i].original_title}">
+                            <img src="./img/alex_default.jpg" class="alex" alt="No image">
                             <figcaption movie-id="${collection[i].id}">
                                 ${collection[i].original_title} (voir plus...)
                             </figcaption>
@@ -74,7 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                     </article>
-                `;
+                    `;
+                }
             };
 
             getPopinLink( document.querySelectorAll('figcaption') );
@@ -91,9 +111,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const displayPopin = data => {
             console.log(data);
-            moviePopin.innerHTML = `
+            if(data.poster_path != null) {
+                moviePopin.innerHTML = `
+                    <div>
+                        <img src="https://image.tmdb.org/t/p/w500/${data.poster_path}" alt="${data.original_title}">
+                    </div>
+
+                    <div>
+                        <h2>${data.original_title}</h2>
+                        <p>${data.overview}</p>
+                        <button>Voir en streaming</button>
+                        <button class="addFilm" film-id=${data.id} film-title="${data.original_title}">Ajouter en favori</button>
+                        <button id="closeButton">Close</button>
+                    </div>
+                `;
+            }
+            else {
+                moviePopin.innerHTML = `
                 <div>
-                    <img src="https://image.tmdb.org/t/p/w500/${data.poster_path}" alt="${data.original_title}">
+                    <img src="./img/alex_default.jpg" alt="No image">
                 </div>
 
                 <div>
@@ -103,11 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="addFilm" film-id=${data.id} film-title="${data.original_title}">Ajouter en favori</button>
                     <button id="closeButton">Close</button>
                 </div>
-            `;
+                 `;
+            }
 
             moviePopin.parentElement.classList.add('open');
             closePopin( document.querySelector('#closeButton') )
             addFavori(document.querySelectorAll('.addFilm'));
+            closePopin(document.querySelector('.addFilm'))
         };
 
         const closePopin = button => {
@@ -129,12 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             for(let btn of btnList){
                 btn.addEventListener('click', ()=>{
+                     let favorite = document.querySelector('#favoriteParagraph');
                     idFilmValue = btn.getAttribute('film-id');
                     nameFilmValue = btn.getAttribute('film-title')
                     filmToAdd = {
                         author: authorValue,
                         id: idFilmValue,
-                        name: nameFilmValue
+                        title: nameFilmValue
                     }
                     config = {
                         method: 'POST',
@@ -143,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     if(authorValue !== null){
                       fetchFavorite(config);
+                        favorite.innerHTML += `<span movie-id="${idFilmValue}" fav-id="${idFilmValue}">${nameFilmValue}. <input type="button" value="X" class="deleting"></span> `;
+
                     }else{
                         console.log('merci de vous connecter')
                     }
@@ -155,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => {
                 return response.json(); 
             })
-            .then(jsonData => {
+                .then(jsonData => {
                 console.log(jsonData);
             })
             .catch(error=>{

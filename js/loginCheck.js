@@ -24,13 +24,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(error)
             })
     }
+    
+    const fetchRemoveFav = (id) => {
+        let config = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        }
+        fetch(`https://api.dwsapp.io/api/favorite/${id}`, config)
+        .then(response => {
+            return response.json(); 
+        })
+        .then(jsonData => {
+            console.log(jsonData);
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+    }
 
-    const displayFavorite = (data) => {
-        let favorite = document.querySelector('#favorite');
-        for(let fav of data){
-            favorite.innerHTML += `${fav.id}, `;
+    const removeFavorite = () =>{
+        let favoris = document.querySelectorAll('.deleting');
+        console.log("ALEXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        for(let favori of favoris){
+            favori.addEventListener('click', () =>{
+                
+                let id = favori.parentElement.getAttribute('fav-id');
+                confirm("Voulez vous supprimer ce film de vos favoris ?")
+                fetchRemoveFav(id);
+                favori.parentElement.style.display = 'none'
+            })
         }
     }
+
+    const displayFavorite = (data) => {
+        let favorite = document.querySelector('#favoriteParagraph');
+        console.log(data) ;
+        if(data.length != 0) {
+            console.log("BONJOURRRRRRRRRRRRRRRRRRRR") ;
+            favorite.innerHTML = `Tes films favoris sont les suivants : `
+            for(let fav of data){
+                console.log("WHAT") ;
+                favorite.innerHTML += `<span movie-id="${fav.id}" fav-id="${fav._id}">${fav.title}. <input type="button" value="X" class="deleting"></span> `;
+            }
+        }
+        else {
+            console.log("BONJOUR") ;
+            favorite.innerHTML += `Tu n'as pas encore de film favori `;
+        }
+
+        removeFavorite();
+  
+    } 
 
     if(localStorage.getItem("user")){
         connexionButton.style.display = 'none';

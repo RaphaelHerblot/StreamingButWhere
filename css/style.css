@@ -1,3 +1,7 @@
+html {
+    background-color: #171717;
+}
+
 body{
     padding: 2rem;
 }
@@ -9,6 +13,11 @@ header{
 
 h1 {
     text-align: center;
+    color:#d2cfcf;
+}
+
+#hi, #favoriteParagraph, label, input {
+    color:#d2cfcf;
 }
 
 .login {
@@ -46,6 +55,22 @@ figure:hover + div.overview{
 #movieList article {
     display: inline-block;
     position: relative;
+    width: 25%;
+}
+
+figure {
+    margin: 1em 20px;
+    text-align: center;
+}
+
+#searchForm {
+    width: 35%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.alex {
+    max-height: 383px;
 }
 
 .overview {
